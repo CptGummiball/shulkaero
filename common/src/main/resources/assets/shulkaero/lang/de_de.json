@@ -1,0 +1,15 @@
+{
+  "shulkaero.waypoint.added": "Wegpunkt „%s“ erstellt",
+  "shulkaero.waypoint.dropped": "„%s“ abgebaut – Wegpunkt bleibt bis zum Einsammeln",
+  "shulkaero.waypoint.removed": "Wegpunkt „%s“ entfernt",
+  "shulkaero.command.usage": "/shulkaero list | clear | toggle | reload",
+  "shulkaero.command.list.header": "Verfolgte Shulkerboxen in dieser Welt: %s",
+  "shulkaero.command.list.entry": "- „%s“ bei %s %s %s (%s)",
+  "shulkaero.command.list.empty": "Keine verfolgten Shulkerboxen in dieser Welt",
+  "shulkaero.command.state.tracked": "platziert",
+  "shulkaero.command.state.dropped": "abgebaut",
+  "shulkaero.command.clear.done": "%s Einträge vergessen – vorhandene Wegpunkte bleiben erhalten",
+  "shulkaero.command.toggle.on": "Shulkaero aktiviert",
+  "shulkaero.command.toggle.off": "Shulkaero deaktiviert",
+  "shulkaero.command.reload.done": "Shulkaero-Konfiguration neu geladen"
+}

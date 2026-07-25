@@ -15,14 +15,40 @@ deleted or renamed it yourself.
 
 - Waypoint on shulker box placement, with the box's **name** and **color**
   (all 16 dye colors map to matching Xaero waypoint colors; the undyed box is purple)
-- Waypoint is removed when the box is broken — also detects removal by explosions,
-  pistons, other players etc. (checked while the chunk is loaded)
+- Placement is confirmed for ~half a second before the waypoint appears, so
+  server-side rollbacks (claims/protection plugins) never leave ghost waypoints
+- When the box is broken, the **waypoint stays while the dropped box item lies
+  nearby** — it is removed once the box is picked up (by anyone), despawns or burns.
+  Creative-mode breaking (no drop) removes it right away. Configurable (`waitForPickup`)
+- Also detects removal by explosions, pistons, other players etc. (checked while
+  the chunk is loaded)
 - Waypoints you deleted or renamed manually are left alone
+- Actionbar/chat feedback (English + German), configurable or off
+- `/shulkaero` client command: `list`, `clear`, `toggle`, `reload`
 - Tracked boxes are persisted (`config/shulkaero/tracked_waypoints.json`), so breaking a
-  box after a relog still cleans up its waypoint
+  box after a relog still cleans up its waypoint; worlds not visited for 90 days are
+  pruned automatically
 - Waypoints are saved through Xaero's own system, so they show up on the minimap **and**
   the world map and survive restarts
-- 100 % client-side, no Fabric API needed; safe to install without Xaero (does nothing then)
+- 100 % client-side; Fabric API is optional (only needed for the command on Fabric);
+  safe to install without Xaero (does nothing then)
+
+## Configuration
+
+`config/shulkaero/config.json` (created on first run, apply with `/shulkaero reload`):
+
+| Option | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` | Master switch (also `/shulkaero toggle`) |
+| `onlyNamedBoxes` | `false` | Only track boxes with a custom (anvil) name |
+| `waitForPickup` | `true` | Keep the waypoint until the dropped box is picked up |
+| `pickupSearchRadius` | `8` | Search radius (blocks) for the dropped box item |
+| `checkIntervalTicks` | `10` | How often tracked positions are checked |
+| `feedback` | `"actionbar"` | `"actionbar"`, `"chat"` or `"none"` |
+| `useOwnWaypointSet` | `false` | Put shulker waypoints into their own waypoint set |
+| `waypointSetName` | `"Shulkaero"` | Name of that set |
+| `colorFromNameCodes` | `false` | Waypoint color from a literal `§`-code in the box name |
+| `namePrefix` | `""` | Prefix for every waypoint name, e.g. `"[Box] "` |
 
 ## Supported versions
 
@@ -71,12 +97,14 @@ versions and metadata ranges) — the Java code is shared and version-agnostic a
 
 - A mixin into `BlockItem#place` captures placements by the local player client-side
   (the item stack is copied *before* vanilla shrinks it, so the custom name of the last
-  box in a stack isn't lost) and creates the waypoint via Xaero's hud API
-  (`BuiltInHudModules.MINIMAP` → current minimap world → current waypoint set), followed
-  by an immediate save through Xaero's world manager IO.
+  box in a stack isn't lost). After a ~10-tick confirmation window the waypoint is
+  created via Xaero's hud API (`BuiltInHudModules.MINIMAP` → current minimap world →
+  current/configured waypoint set), followed by an immediate save through Xaero's world
+  manager IO.
 - A lightweight client-tick check (every 10 ticks, only tracked positions, only loaded
-  chunks) notices when a tracked box is gone and removes the matching waypoint — matched
-  by exact position **and** name, so player-edited waypoints survive.
+  chunks) notices when a tracked box is gone, then watches for the dropped box item
+  nearby; once the item is gone, it removes the matching waypoint — matched by exact
+  position **and** name, so player-edited waypoints survive.
 - Tracked positions are bucketed by Xaero's own per-world path (server/world +
   dimension), so multiworld servers and dimension changes behave correctly.
 

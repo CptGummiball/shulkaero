@@ -24,5 +24,8 @@
   },
   "recommends": {
     "xaerominimap": "*"
+  },
+  "suggests": {
+    "fabric-command-api-v2": "*"
   }
 }

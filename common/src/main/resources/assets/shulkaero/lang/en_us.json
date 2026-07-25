@@ -1,0 +1,15 @@
+{
+  "shulkaero.waypoint.added": "Waypoint '%s' created",
+  "shulkaero.waypoint.dropped": "'%s' dropped – waypoint stays until the box is picked up",
+  "shulkaero.waypoint.removed": "Waypoint '%s' removed",
+  "shulkaero.command.usage": "/shulkaero list | clear | toggle | reload",
+  "shulkaero.command.list.header": "Tracked shulker boxes in this world: %s",
+  "shulkaero.command.list.entry": "- '%s' at %s %s %s (%s)",
+  "shulkaero.command.list.empty": "No tracked shulker boxes in this world",
+  "shulkaero.command.state.tracked": "placed",
+  "shulkaero.command.state.dropped": "dropped",
+  "shulkaero.command.clear.done": "Forgot %s tracked box(es) – existing waypoints were kept",
+  "shulkaero.command.toggle.on": "Shulkaero enabled",
+  "shulkaero.command.toggle.off": "Shulkaero disabled",
+  "shulkaero.command.reload.done": "Shulkaero config reloaded"
+}

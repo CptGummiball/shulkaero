@@ -53,8 +53,8 @@ public final class PlacementHook {
         }
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
-        if (state.getBlock() instanceof ShulkerBoxBlock shulkerBox) {
-            ShulkerWaypointManager.onShulkerPlaced(level, pos, captured, shulkerBox);
+        if (state.getBlock() instanceof ShulkerBoxBlock) {
+            ShulkerWaypointManager.onShulkerPlaceDetected(pos, captured);
         }
     }
 }

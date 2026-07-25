@@ -43,14 +43,26 @@ dependencies {
     if (universal) {
         // Only for the Fabric entrypoint class in the universal jar
         compileOnly "net.fabricmc:fabric-loader:${tp.getProperty('fabric_loader_version')}"
+        // Optional at runtime: only for the /shulkaero command on the Fabric side
+        // (umbrella POM pulls the module jars onto the compile classpath)
+        compileOnly "net.fabricmc.fabric-api:fabric-api:${tp.getProperty('fabric_api_version')}"
     }
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'com.google.code.gson:gson:2.11.0'
 }
 
 sourceSets.main.java.srcDir rootProject.file('common/src/main/java')
+sourceSets.main.java.srcDir rootProject.file("common/src/compat/${tp.getProperty('compat_level', 'pre26')}/java")
 sourceSets.main.resources.srcDir rootProject.file('common/src/main/resources')
 if (universal) {
     sourceSets.main.java.srcDir rootProject.file('fabric/src/main/java')
     sourceSets.main.resources.srcDir rootProject.file('fabric/src/main/resources')
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
 }
 
 processResources {

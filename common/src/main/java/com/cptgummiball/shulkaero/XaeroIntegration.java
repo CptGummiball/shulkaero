@@ -17,8 +17,9 @@ import xaero.hud.minimap.world.MinimapWorld;
  * so the mod also works (as a no-op) without Xaero installed.
  * <p>
  * Waypoints created here are added to the currently active waypoint set of the
- * current Xaero minimap world and saved immediately, so they survive relogs and
- * also show up on Xaero's World Map (which renders minimap waypoints).
+ * current Xaero minimap world (or a dedicated set, if configured) and saved
+ * immediately, so they survive relogs and also show up on Xaero's World Map
+ * (which renders minimap waypoints).
  */
 final class XaeroIntegration {
 
@@ -41,7 +42,7 @@ final class XaeroIntegration {
     }
 
     /**
-     * Adds a waypoint at the given block position to the current waypoint set.
+     * Adds a waypoint at the given block position.
      *
      * @return the world key the waypoint was added under, or null on failure
      */
@@ -54,17 +55,14 @@ final class XaeroIntegration {
         if (world == null) {
             return null;
         }
-        WaypointSet set = world.getCurrentWaypointSet();
-        if (set == null) {
-            set = world.getWaypointSet(MinimapWorld.DEFAULT_SET);
-        }
+        WaypointSet set = targetSet(world);
         if (set == null) {
             return null;
         }
         Waypoint waypoint = new Waypoint(x, y, z, name, initials, resolveColor(colorRef), WaypointPurpose.NORMAL, false);
         set.add(waypoint);
         save(session, world);
-        Shulkaero.LOGGER.info("Added waypoint '{}' at {},{},{} in {}", name, x, y, z, world.getFullPath());
+        Shulkaero.LOGGER.debug("Added waypoint '{}' at {},{},{} in {}", name, x, y, z, world.getFullPath());
         return world.getFullPath().toString();
     }
 
@@ -100,18 +98,39 @@ final class XaeroIntegration {
         }
         if (removedAny) {
             save(session, world);
-            Shulkaero.LOGGER.info("Removed waypoint '{}' at {},{},{} in {}", name, x, y, z, world.getFullPath());
+            Shulkaero.LOGGER.debug("Removed waypoint '{}' at {},{},{} in {}", name, x, y, z, world.getFullPath());
         }
         return removedAny;
     }
 
-    private static WaypointColor resolveColor(ShulkerColors.ColorRef colorRef) {
-        try {
-            return WaypointColor.valueOf(colorRef.enumName());
-        } catch (IllegalArgumentException e) {
-            // Older Xaero's Minimap without the extended color palette
-            return WaypointColor.fromIndex(colorRef.fallbackIndex());
+    private static WaypointSet targetSet(MinimapWorld world) {
+        ShulkaeroConfig config = ShulkaeroConfig.get();
+        if (config.useOwnWaypointSet) {
+            WaypointSet set = world.getWaypointSet(config.waypointSetName);
+            if (set == null) {
+                world.addWaypointSet(WaypointSet.Builder.begin().setName(config.waypointSetName).build());
+                set = world.getWaypointSet(config.waypointSetName);
+            }
+            if (set != null) {
+                return set;
+            }
         }
+        WaypointSet set = world.getCurrentWaypointSet();
+        if (set == null) {
+            set = world.getWaypointSet(MinimapWorld.DEFAULT_SET);
+        }
+        return set;
+    }
+
+    private static WaypointColor resolveColor(ShulkerColors.ColorRef colorRef) {
+        if (colorRef.enumName() != null) {
+            try {
+                return WaypointColor.valueOf(colorRef.enumName());
+            } catch (IllegalArgumentException e) {
+                // Older Xaero's Minimap without the extended color palette
+            }
+        }
+        return WaypointColor.fromIndex(colorRef.fallbackIndex());
     }
 
     private static void save(MinimapSession session, MinimapWorld world) {
