@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.cptgummiball.shulkaero.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BlockItemMixin",
+    "MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

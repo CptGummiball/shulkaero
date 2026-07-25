@@ -1,0 +1,66 @@
+// Fabric module — used for MC 1.21.x targets (intermediary runtime, remapped jar).
+// For MC >= 26.1 this module is not included; the :neoforge module builds a
+// universal jar that also works on Fabric (see settings.gradle).
+
+plugins {
+    id 'net.fabricmc.fabric-loom-remap' version '1.17.17'
+}
+
+def tp = gradle.ext.targetProps
+def mcVersion = tp.getProperty('minecraft_version')
+def javaVersion = Integer.parseInt(tp.getProperty('java_version'))
+
+base.archivesName = 'shulkaero-fabric'
+
+repositories {
+    mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = uri('https://api.modrinth.com/maven')
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
+}
+
+// Loom 1.17+ remaps mixin annotations directly during remapJar (no refmap/AP needed).
+
+dependencies {
+    minecraft "com.mojang:minecraft:${mcVersion}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${tp.getProperty('fabric_loader_version')}"
+
+    // Xaero's Minimap for compiling against its waypoint API (runtime: user-installed)
+    modCompileOnly "maven.modrinth:xaeros-minimap:${tp.getProperty('xaero_fabric_version')}"
+}
+
+sourceSets.main.java.srcDir rootProject.file('common/src/main/java')
+sourceSets.main.resources.srcDir rootProject.file('common/src/main/resources')
+
+processResources {
+    def replacements = [
+            version         : project.version.toString(),
+            mc_range        : tp.getProperty('fabric_minecraft_range'),
+            loader_min      : tp.getProperty('fabric_loader_min'),
+            author          : rootProject.property('mod_author').toString()
+    ]
+    inputs.properties(replacements)
+    filesMatching('fabric.mod.json') {
+        expand(replacements)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = javaVersion
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }
+}

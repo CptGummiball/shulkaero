@@ -1,0 +1,28 @@
+// Root project: shared configuration + jar collection.
+// Build with:  ./gradlew build -Ptarget=<target>   (see versions/*.properties)
+// Jars are collected into dist/<target>/ by the 'collectJars' task (runs after build).
+
+def targetName = gradle.ext.target
+
+allprojects {
+    group = rootProject.property('maven_group')
+    version = "${rootProject.property('mod_version')}+mc${gradle.ext.target}"
+}
+
+def collectJars = tasks.register('collectJars', Copy) {
+    group = 'build'
+    description = "Copies the final mod jars of the current target into dist/${targetName}"
+    into rootProject.file("dist/${targetName}")
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+subprojects {
+    afterEvaluate { p ->
+        if (!p.plugins.hasPlugin('java')) return
+        def finalJarTask = p.tasks.findByName('remapJar') != null ? 'remapJar' : 'jar'
+        collectJars.configure { copyTask ->
+            copyTask.from(p.tasks.named(finalJarTask))
+            copyTask.dependsOn(p.tasks.named('build'))
+        }
+    }
+}

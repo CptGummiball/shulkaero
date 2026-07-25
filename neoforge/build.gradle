@@ -1,0 +1,86 @@
+// NeoForge module. For MC >= 26.1 (unobfuscated Minecraft) this module builds a
+// UNIVERSAL jar that runs on both NeoForge and Fabric: it additionally packages
+// the Fabric entrypoint and fabric.mod.json. For 1.21.x it builds a plain
+// NeoForge-only jar (Fabric needs its own remapped jar there, see :fabric).
+
+plugins {
+    id 'net.neoforged.moddev' version '2.0.142'
+}
+
+def tp = gradle.ext.targetProps
+def universal = gradle.ext.universal
+def javaVersion = Integer.parseInt(tp.getProperty('java_version'))
+
+base.archivesName = universal ? 'shulkaero-universal' : 'shulkaero-neoforge'
+
+repositories {
+    mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = uri('https://api.modrinth.com/maven')
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    maven {
+        name = 'FabricMC'
+        url = uri('https://maven.fabricmc.net/')
+    }
+}
+
+neoForge {
+    version = tp.getProperty('neoforge_version')
+}
+
+dependencies {
+    // Xaero's Minimap for compiling against its waypoint API (runtime: user-installed)
+    compileOnly "maven.modrinth:xaeros-minimap:${tp.getProperty('xaero_neoforge_version')}"
+
+    if (universal) {
+        // Only for the Fabric entrypoint class in the universal jar
+        compileOnly "net.fabricmc:fabric-loader:${tp.getProperty('fabric_loader_version')}"
+    }
+}
+
+sourceSets.main.java.srcDir rootProject.file('common/src/main/java')
+sourceSets.main.resources.srcDir rootProject.file('common/src/main/resources')
+if (universal) {
+    sourceSets.main.java.srcDir rootProject.file('fabric/src/main/java')
+    sourceSets.main.resources.srcDir rootProject.file('fabric/src/main/resources')
+}
+
+processResources {
+    def replacements = [
+            version         : project.version.toString(),
+            mc_range        : tp.getProperty('neoforge_mc_range'),
+            author          : rootProject.property('mod_author').toString(),
+            // only used when the universal jar includes fabric.mod.json:
+            loader_min      : tp.getProperty('fabric_loader_min')
+    ]
+    // fabric.mod.json uses a different range syntax than neoforge.mods.toml
+    def fabricReplacements = replacements + [mc_range: tp.getProperty('fabric_minecraft_range')]
+    inputs.properties(replacements)
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(replacements)
+    }
+    if (universal) {
+        filesMatching('fabric.mod.json') {
+            expand(fabricReplacements)
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = javaVersion
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }
+}

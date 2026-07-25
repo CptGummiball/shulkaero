@@ -1,0 +1,30 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/CptGummiball/Shulkaero/issues"
+
+[[mixins]]
+config = "shulkaero.mixins.json"
+
+[[mods]]
+modId = "shulkaero"
+version = "${version}"
+displayName = "Shulkaero"
+displayTest = "IGNORE_ALL_VERSION"
+authors = "${author}"
+logoFile = "assets/shulkaero/icon.png"
+description = '''Placed shulker boxes automatically get a Xaero's Minimap / World Map waypoint with the box's name and color. Breaking the box removes the waypoint again.'''
+
+[[dependencies.shulkaero]]
+modId = "minecraft"
+type = "required"
+versionRange = "${mc_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.shulkaero]]
+modId = "xaerominimap"
+type = "optional"
+versionRange = "[0,)"
+ordering = "AFTER"
+side = "CLIENT"

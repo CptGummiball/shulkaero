@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "shulkaero",
+  "version": "${version}",
+  "name": "Shulkaero",
+  "description": "Placed shulker boxes automatically get a Xaero's Minimap / World Map waypoint with the box's name and color. Breaking the box removes the waypoint again.",
+  "authors": [
+    "${author}"
+  ],
+  "license": "MIT",
+  "icon": "assets/shulkaero/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.cptgummiball.shulkaero.fabric.ShulkaeroFabric"
+    ]
+  },
+  "mixins": [
+    "shulkaero.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_min}",
+    "minecraft": "${mc_range}"
+  },
+  "recommends": {
+    "xaerominimap": "*"
+  }
+}
