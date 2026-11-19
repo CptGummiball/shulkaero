@@ -1,0 +1,135 @@
+name: Bug report
+description: Something in Shulkaero does not work as described, crashes, or waypoints go wrong.
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please check the [FAQ](https://github.com/CptGummiball/Shulkaero/wiki/FAQ) first.
+
+        If the problem only happens together with a specific other mod, please use the **Mod compatibility** template instead.
+
+  - type: dropdown
+    id: minecraft
+    attributes:
+      label: Minecraft version
+      description: The Shulkaero jar name contains the Minecraft version it is made for.
+      options:
+        - "1.21"
+        - "1.21.1"
+        - "1.21.2"
+        - "1.21.3"
+        - "1.21.4"
+        - "1.21.5"
+        - "1.21.6"
+        - "1.21.7"
+        - "1.21.8"
+        - "1.21.9"
+        - "1.21.10"
+        - "1.21.11"
+        - "26.1"
+        - "26.1.1"
+        - "26.1.2"
+        - "26.2"
+        - "26.3"
+        - "other (write it below)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Loader
+      options:
+        - Fabric
+        - NeoForge
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Shulkaero jar, loader and Xaero versions
+      description: The exact file name of the Shulkaero jar, the Fabric Loader (+ Fabric API) or NeoForge version, and your Xaero's Minimap (and World Map) version.
+      placeholder: "shulkaero-fabric-1.1.1+mc1.21.2-1.21.11.jar, MC 1.21.11, Fabric Loader 0.19.3, Xaero's Minimap 26.4.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where does it happen?
+      options:
+        - Singleplayer
+        - Multiplayer server
+        - LAN / integrated server
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Area
+      multiple: true
+      options:
+        - Waypoint not created
+        - Waypoint not removed
+        - Waypoint removed although the box/item still exists
+        - Wrong name, color or position
+        - Wrong world/dimension
+        - /shulkaero command
+        - Config
+        - Crash
+        - Other
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The smaller the setup, the faster it can be fixed. Screenshots of the map help a lot.
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other mods
+      description: The full mod list, or at least the mods involved (with versions). Write "none" for a clean install.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and crash report
+      description: |
+        Please upload `logs/latest.log` and, if there was a crash, the file from `crash-reports/` (drag and drop into this field, or link a paste site). If waypoints behave oddly, `config/shulkaero/tracked_waypoints.json` helps too.
+      placeholder: Drop files here or paste a link.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I use the Shulkaero jar whose name contains my Minecraft version, for my loader.
+          required: true
+        - label: I searched the existing issues for this problem.
+          required: true

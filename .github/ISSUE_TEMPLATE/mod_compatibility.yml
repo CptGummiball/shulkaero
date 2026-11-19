@@ -1,0 +1,39 @@
+name: Mod compatibility
+description: Shulkaero misbehaves only together with a specific other mod (or Xaero version).
+labels: ["compatibility", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when the problem only appears with a specific other mod installed, or with a specific Xaero's Minimap / World Map version.
+
+  - type: input
+    id: partner
+    attributes:
+      label: The other mod
+      description: Name, exact version and download link of the mod (or the Xaero version) involved.
+      placeholder: "Xaero's Minimap 25.2.0 - https://modrinth.com/mod/xaeros-minimap"
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Shulkaero jar, Minecraft and loader
+      placeholder: "shulkaero-universal-1.1.1+mc26.1-26.3.jar, MC 26.2, Fabric Loader 0.19.3"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens together, and what happens without the other mod?
+      description: Please test once without the other mod - does the problem disappear?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: "`logs/latest.log` (and the crash report, if any)."

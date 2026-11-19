@@ -1,0 +1,32 @@
+name: Feature request
+description: An idea for Shulkaero (new option, behavior change, quality of life).
+labels: ["enhancement", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [wiki](https://github.com/CptGummiball/Shulkaero/wiki) and existing issues first - maybe it already exists as a config option.
+
+        Keep in mind: Shulkaero is strictly client-side. Features that would need server-side code are out of scope.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should Shulkaero do?
+      description: Describe the feature from the player's point of view.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it useful?
+      description: What situation does it improve? How do you handle it today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      description: Edge cases, how it should interact with existing options, mockups.
