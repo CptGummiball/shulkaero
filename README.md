@@ -112,7 +112,6 @@ it in videos and streams, put it **unmodified** in modpacks (free or paid); no
 modification, decompiling or re-uploading; compile-only use for compatibility development
 is allowed. For anything else, open a
 [permission request](../../issues/new?template=permission_request.yml).
-Versions 1.0.0 and 1.1.0 were published under MIT and remain MIT.
 
 Shulkaero is an unofficial addon for Xaero's Minimap / World Map and is not affiliated
 with their author, Mojang or Microsoft.
